@@ -10,7 +10,7 @@
   <div class="landing">
     <div class="landing-header">
       <a href="{{ url_for('index') }}" class="logo">
-        <span class="logo-icon">🏮</span>DeepPress
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="DeepPress">
       </a>
       <div class="landing-nav">
         {% if user %}

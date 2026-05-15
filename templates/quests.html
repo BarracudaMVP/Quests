@@ -20,16 +20,27 @@
       <div class="quest-card-img img-{{ q.id }}"></div>
       <div class="quest-card-body">
         <h3>{{ q.name }}</h3>
-        <div class="quest-tags">
-          <span class="quest-tag">{{ q.min_players }}–{{ q.max_players }} <span>игроков</span></span>
-          <span class="quest-tag"><span>{{ q.duration }}</span> мин</span>
-          <span class="quest-tag">от <span>{{ q.price }}</span> ₽</span>
+        <div class="quest-meta">
+          <span class="quest-meta-item">{{ q.min_players }}–{{ q.max_players }} игроков</span>
+          <span class="quest-meta-item">{{ q.duration }} мин</span>
+          <span class="quest-meta-item">{{ q.age_limit }}+</span>
         </div>
-        {% if user %}
-          <a href="{{ url_for('quest_detail', quest_id=q.id) }}" class="btn btn-primary btn-block">Забронировать</a>
+        {% if q.fear >= q.difficulty %}
+          {% set r_val = q.fear %}{% set r_lbl = "Страх" %}
         {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-outline btn-block">Войти для брони</a>
+          {% set r_val = q.difficulty %}{% set r_lbl = "Сложность" %}
         {% endif %}
+        <div class="quest-stars-row">
+          <div class="quest-stars">
+            <span class="quest-star-label">{{ r_lbl }}</span>
+            {% for i in range(1, 6) %}<span class="quest-star {{ 'filled' if i <= r_val }}">★</span>{% endfor %}
+          </div>
+          {% if user %}
+            <a href="{{ url_for('quest_detail', quest_id=q.id) }}" class="btn btn-primary btn-sm">Бронировать</a>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-outline btn-sm">Бронировать</a>
+          {% endif %}
+        </div>
       </div>
     </div>
     {% endfor %}

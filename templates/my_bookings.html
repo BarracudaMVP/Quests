@@ -14,21 +14,28 @@
       <div class="list-card-row">
         <div>
           <h3>{{ q.name }}</h3>
-          <div class="info-row">
-            <div class="info-item"><span class="lbl">Дата, время</span><strong>{{ b.slot }}</strong></div>
-            <div class="info-item">
-              <span class="lbl">Количество игроков</span>
-              <strong>{{ b.player_count }}</strong>
-            </div>
+          <div class="info-item" style="margin-bottom:10px">
+            <span class="lbl">Дата, время</span><strong>{{ b.slot }}</strong>
           </div>
         </div>
-        <div class="list-card-actions">
-          <form method="POST" action="{{ url_for('delete_booking', booking_id=b.id) }}"
-                onsubmit="return confirm('Отменить бронирование?')">
-            <button type="submit" class="btn btn-outline btn-sm">Отменить бронь</button>
-          </form>
-        </div>
       </div>
+      <form method="POST" action="{{ url_for('edit_booking', booking_id=b.id) }}">
+        <div class="player-count-input" style="margin-bottom:14px">
+          <span>Количество игроков</span>
+          <input type="number" name="player_count"
+                 value="{{ b.player_count }}"
+                 min="{{ q.min_players }}" max="{{ q.max_players }}">
+        </div>
+        <div class="list-card-actions">
+          <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+          <button type="button" class="btn btn-outline btn-sm"
+                  onclick="document.getElementById('del-{{ b.id }}').submit()">
+            Отменить бронь
+          </button>
+        </div>
+      </form>
+      <form id="del-{{ b.id }}" method="POST"
+            action="{{ url_for('delete_booking', booking_id=b.id) }}" style="display:none"></form>
     </div>
     {% endfor %}
   </div>

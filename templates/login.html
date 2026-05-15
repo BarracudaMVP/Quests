@@ -10,7 +10,7 @@
   <div class="modal-page">
     <div class="modal-header">
       <a href="{{ url_for('index') }}" class="logo">
-        <span class="logo-icon">🏮</span>DeepPress
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="DeepPress">
       </a>
     </div>
     <div class="modal-body">
@@ -29,17 +29,27 @@
         <form method="POST">
           <div class="field">
             <label>Телефон</label>
-            <input type="text" name="phone" placeholder="+7 (900) 000-00-00" autofocus>
+            <input type="text" name="phone" placeholder="+7 (900) 000-00-00" data-phone autofocus>
           </div>
           <div class="field">
             <label>Пароль</label>
-            <input type="password" name="password" placeholder="••••••••">
+            <div class="pw-wrap">
+              <input type="password" name="password" placeholder="••••••••">
+              <button type="button" class="pw-eye"
+                      onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                      onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                      ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary btn-block">Войти</button>
         </form>
-        <p class="modal-hint"><a href="{{ url_for('register') }}">Забыли пароль?</a></p>
+        <p class="modal-hint"><a href="{{ url_for('forgot_password') }}">Забыли пароль?</a></p>
       </div>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='js/pw-eye.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/phone-format.js') }}"></script>
 </body>
 </html>
