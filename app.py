@@ -232,51 +232,6 @@ def profile():
     return render_template('profile.html', user=user, editing=editing)
 
 
-# ─── Admin ───────────────────────────────────────────────────────────────────
-
-@app.route('/admin')
-@login_required
-def admin():
-    return render_template('admin.html', users=book.GetAllUsers(), user=current_user())
-
-
-@app.route('/admin/user/add', methods=['POST'])
-@login_required
-def admin_add_user():
-    errors = book.Register(request.form)
-    if errors:
-        for e in errors: flash(e)
-    else:
-        flash('Пользователь добавлен')
-    return redirect(url_for('admin'))
-
-
-@app.route('/admin/user/edit/<int:user_id>', methods=['GET', 'POST'])
-@login_required
-def admin_edit_user(user_id):
-    target = book.GetUser(user_id)
-    if not target:
-        flash('Пользователь не найден')
-        return redirect(url_for('admin'))
-    if request.method == 'POST':
-        errors = book.UpdateProfile(target, request.form)
-        if not errors:
-            flash('Пользователь обновлён')
-            return redirect(url_for('admin'))
-        for e in errors: flash(e)
-    return render_template('admin_user_form.html', target=target, user=current_user())
-
-
-@app.route('/admin/user/delete/<int:user_id>', methods=['POST'])
-@login_required
-def admin_delete_user(user_id):
-    if user_id == session.get('user_id'):
-        flash('Нельзя удалить себя')
-        return redirect(url_for('admin'))
-    book.DeleteUser(user_id)
-    flash('Пользователь удалён')
-    return redirect(url_for('admin'))
-
 
 @app.teardown_appcontext
 def teardown(ctx):

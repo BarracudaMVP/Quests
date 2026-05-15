@@ -200,9 +200,6 @@ class Book:
     def GetUser(self, user_id):
         return self.items.get(user_id)
 
-    def GetAllUsers(self):
-        return list(self.items.values())
-
     def Login(self, phone, password):
         normalized = ("+" + phone) if not phone.startswith("+") else phone
         for user in self.items.values():
@@ -299,11 +296,6 @@ class Book:
             user.password = password
             self.storage.Store()
         return errors
-
-    def DeleteUser(self, user_id):
-        if user_id in self.items:
-            del self.items[user_id]
-            self.storage.Store()
 
     # ── Quests ─────────────────────────────────────────────────────────────
 
