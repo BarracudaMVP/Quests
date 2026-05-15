@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Изменить пользователя — DeepPress{% endblock %}
+
+{% block content %}
+<div class="form-center">
+  <div class="profile-card">
+    <h2>Пользователь #{{ target.id }}</h2>
+    <form method="POST">
+      <div class="field"><label>Имя</label><input type="text" name="first_name" value="{{ target.first_name }}"></div>
+      <div class="field"><label>Фамилия</label><input type="text" name="second_name" value="{{ target.second_name }}"></div>
+      <div class="field"><label>Email</label><input type="email" name="email" value="{{ target.email }}"></div>
+      <div class="field"><label>Телефон</label><input type="text" value="{{ target.phone }}" disabled></div>
+      <div class="field-row">
+        <div class="field"><label>Новый пароль</label><input type="password" name="password"></div>
+        <div class="field"><label>Повторите пароль</label><input type="password" name="confirm_password"></div>
+      </div>
+      <div class="profile-actions">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{{ url_for('admin') }}" class="btn btn-outline">Назад</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

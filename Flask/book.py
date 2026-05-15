@@ -9,22 +9,11 @@ class Book:
     def __init__(self):
         self.storage = PickleStorage(self)
         
-          
-    def GetHeader(self):
-        return render_template('header.tpl')
-
-    def GetFooter(self):
-        return render_template('footer.tpl')
-        
     def ShowForm(self, id):
         return self.storage.GetItem(id).ShowForm()
         
     def ShowBook(self):
-        r = ''
-        for item in self.storage.GetItems():
-            r += item.Show()
-            
-        return r + render_template('add.tpl')
+        return render_template('book.tpl', items=self.storage.GetItems())
         
     def Add(self):
         item = self.storage.GetItem(int( request.form.get('id', 0) ))
@@ -84,7 +73,7 @@ class BookItem:
         self.time = datetime.datetime.now()
 
     def Show(self):
-        return render_template('item.tpl', **self.__dict__)
+        return "BootItem Edit"
     
     def SetFormData(self, form):
         self.id = int(form.get('id'))
@@ -93,5 +82,5 @@ class BookItem:
         self.author = form.get('author')
     
     def ShowForm(self):
-        return render_template('form.tpl', **self.__dict__)
+        return render_template('form.tpl', it=self)
 

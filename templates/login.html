@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — DeepPress</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="modal-page">
+    <div class="modal-header">
+      <a href="{{ url_for('index') }}" class="logo">
+        <span class="logo-icon">🏮</span>DeepPress
+      </a>
+    </div>
+    <div class="modal-body">
+      <div class="modal-card">
+        <a href="{{ url_for('index') }}" class="modal-close">✕</a>
+        <h2>Вход в личный кабинет</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alerts">
+              {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+          <div class="field">
+            <label>Телефон</label>
+            <input type="text" name="phone" placeholder="+7 (900) 000-00-00" autofocus>
+          </div>
+          <div class="field">
+            <label>Пароль</label>
+            <input type="password" name="password" placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Войти</button>
+        </form>
+        <p class="modal-hint"><a href="{{ url_for('register') }}">Забыли пароль?</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

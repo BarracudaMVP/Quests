@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Каталог квестов — DeepPress{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+  <div class="page-subtitle">DeepPress. Квесты, после которых внутри что-то меняется.</div>
+  <p>
+    DeepPress — место, где страх становится топливом. Каждый квест — отдельный мир,
+    пропитанный мраком, загадками и диалогами, от которых перехватывает дыхание.
+    Собери команду, включи логику и интуицию — и будь готов к тому, что с каждой
+    секундой будет труднее. Найди выход. Выдержи давление.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Каталог квестов</h2>
+  <div class="quest-grid">
+    {% for q in quests %}
+    <div class="quest-card">
+      <div class="quest-card-img img-{{ q.id }}"></div>
+      <div class="quest-card-body">
+        <h3>{{ q.name }}</h3>
+        <div class="quest-tags">
+          <span class="quest-tag">{{ q.min_players }}–{{ q.max_players }} <span>игроков</span></span>
+          <span class="quest-tag"><span>{{ q.duration }}</span> мин</span>
+          <span class="quest-tag">от <span>{{ q.price }}</span> ₽</span>
+        </div>
+        {% if user %}
+          <a href="{{ url_for('quest_detail', quest_id=q.id) }}" class="btn btn-primary btn-block">Забронировать</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline btn-block">Войти для брони</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base_cabinet.html" %}
+{% block title %}Мои отзывы — DeepPress{% endblock %}
+{% set active_tab = 'reviews' %}
+
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">Мои отзывы</h1>
+</div>
+
+{% if reviews %}
+<div class="list">
+  {% for r in reviews %}
+  {% set q = qmap[r.quest_id] %}
+  <div class="list-card">
+    <h3>{{ q.name }}</h3>
+    <div class="ratings-row">
+      <div class="rating-item">Общее впечатление: <strong>{{ r.overall }}/5</strong></div>
+      <div class="rating-item">Актёрская игра: <strong>{{ r.acting }}/5</strong></div>
+      <div class="rating-item">Логичность и связность заданий: <strong>{{ r.logic }}/5</strong></div>
+    </div>
+    <p class="review-text">{{ r.text }}</p>
+    <div class="list-card-actions" style="margin-top:16px">
+      <a href="{{ url_for('edit_review', review_id=r.id) }}" class="btn btn-primary btn-sm">Редактировать</a>
+      <form method="POST" action="{{ url_for('delete_review', review_id=r.id) }}"
+            onsubmit="return confirm('Удалить отзыв?')">
+        <button type="submit" class="btn btn-outline btn-sm">Удалить</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty-state">Отзывов пока нет.</div>
+{% endif %}
+
+<div style="margin-top:24px;text-align:center">
+  <a href="{{ url_for('add_review') }}" class="btn btn-primary">Оставить отзыв</a>
+</div>
+{% endblock %}

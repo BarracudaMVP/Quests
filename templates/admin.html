@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Администрирование — DeepPress{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Панель администратора</h1>
+
+<div class="add-user-card">
+  <h2>Добавить пользователя</h2>
+  <form method="POST" action="{{ url_for('admin_add_user') }}">
+    <div class="field-row">
+      <div class="field"><label>Имя</label><input type="text" name="first_name" required></div>
+      <div class="field"><label>Фамилия</label><input type="text" name="second_name" required></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Телефон</label><input type="text" name="phone" placeholder="79991234567" required></div>
+      <div class="field"><label>Email</label><input type="email" name="email"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Пароль</label><input type="password" name="password" required></div>
+      <div class="field"><label>Повторите пароль</label><input type="password" name="confirm_password" required></div>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+  </form>
+</div>
+
+<h2 style="font-size:1rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px">
+  Пользователи ({{ users|length }})
+</h2>
+{% if users %}
+<table class="data-table">
+  <thead>
+    <tr><th>ID</th><th>Имя</th><th>Фамилия</th><th>Телефон</th><th>Email</th><th>С нами с</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td>
+      <td>{{ u.first_name }}</td>
+      <td>{{ u.second_name }}</td>
+      <td>{{ u.phone }}</td>
+      <td>{{ u.email or '—' }}</td>
+      <td>{{ u.time.strftime('%d.%m.%Y') }}</td>
+      <td class="actions">
+        <a href="{{ url_for('admin_edit_user', user_id=u.id) }}" class="btn btn-outline btn-sm">Изменить</a>
+        <form method="POST" action="{{ url_for('admin_delete_user', user_id=u.id) }}" style="display:inline"
+              onsubmit="return confirm('Удалить {{ u.first_name }}?')">
+          <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <div class="empty-state">Пользователей нет</div>
+{% endif %}
+{% endblock %}

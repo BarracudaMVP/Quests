@@ -16,19 +16,19 @@ def GetBook():
 
 @app.route("/")
 def bookindex():
-    return GetBook().GetHeader() + GetBook().ShowBook() + GetBook().GetFooter()
+    return GetBook().ShowBook()
 
 @app.route("/showform/<int:id>")
 def showform(id):
-    return GetBook().GetHeader() + GetBook().ShowForm(id) + GetBook().GetFooter()
+    return GetBook().ShowForm(id)
 
 @app.route("/delete/<int:id>")
 def deleteitem(id):
-    return GetBook().GetHeader() + GetBook().Delete(id) + GetBook().GetFooter()
+    return GetBook().Delete(id)
 
 @app.route("/add", methods=['POST'])
 def add():
-    return GetBook().GetHeader() + GetBook().Add() + GetBook().GetFooter()
+    return GetBook().Add()
 
 @app.teardown_appcontext
 def teardown_book(ctx):

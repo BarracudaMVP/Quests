@@ -1,0 +1,45 @@
+{% extends "base_cabinet.html" %}
+{% block title %}Мои игры — DeepPress{% endblock %}
+{% set active_tab = 'bookings' %}
+
+{% block content %}
+<h1 class="page-title">Мои игры</h1>
+
+{% if bookings %}
+  <div class="list-section-title">Предстоящие:</div>
+  <div class="list" style="margin-bottom:32px">
+    {% for b in bookings %}
+    {% set q = qmap[b.quest_id] %}
+    <div class="list-card">
+      <div class="list-card-row">
+        <div>
+          <h3>{{ q.name }}</h3>
+          <div class="info-row">
+            <div class="info-item"><span class="lbl">Дата, время</span><strong>{{ b.slot }}</strong></div>
+            <div class="info-item">
+              <span class="lbl">Количество игроков</span>
+              <strong>{{ b.player_count }}</strong>
+            </div>
+          </div>
+        </div>
+        <div class="list-card-actions">
+          <form method="POST" action="{{ url_for('delete_booking', booking_id=b.id) }}"
+                onsubmit="return confirm('Отменить бронирование?')">
+            <button type="submit" class="btn btn-outline btn-sm">Отменить бронь</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="list-section-title">Прошедшие:</div>
+  <div class="empty-state">Прошедших игр нет</div>
+
+{% else %}
+  <div class="empty-state">
+    У вас нет бронирований.<br>
+    <a href="{{ url_for('quests') }}">Выбрать квест</a>
+  </div>
+{% endif %}
+{% endblock %}

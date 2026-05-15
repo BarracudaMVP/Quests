@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Оставить отзыв — DeepPress{% endblock %}
+
+{% block content %}
+<div class="form-center">
+  <div class="profile-card">
+    <h2>Оставьте отзыв на перфоманс</h2>
+
+    <form method="POST">
+      <div class="field">
+        <select name="quest_id" required>
+          <option value="" disabled selected>Название квеста</option>
+          {% for q in quests %}
+          <option value="{{ q.id }}">{{ q.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="rating-group">
+        <label>Общее впечатление:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="overall" value="{{ v }}" {% if v==5 %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Актёрская игра:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="acting" value="{{ v }}" {% if v==5 %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Логичность и связность заданий:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="logic" value="{{ v }}" {% if v==5 %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:8px">
+        <label>Отзыв</label>
+        <textarea name="text" placeholder="Напишите, что понравилось или что можно улучшить" required></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Оставить отзыв</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

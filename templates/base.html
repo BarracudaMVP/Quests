@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DeepPress{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ url_for('index') }}" class="logo">
+        <span class="logo-icon">🏮</span>DeepPress
+      </a>
+      <a href="tel:+79991234567" class="header-phone">
+        +7-999-123-45-67 &nbsp;📞
+      </a>
+      <div class="header-right">
+        {% if user %}
+          <a href="{{ url_for('profile') }}" class="header-user" title="{{ user.first_name }}">👤</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="header-user" title="Войти">👤</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alerts">
+          {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-title">Контакты</div>
+    <div class="footer-contacts">
+      +7-999-123-45-67 &nbsp;|&nbsp; hello@deeppress.ru &nbsp;|&nbsp;
+      115280, Москва, ул. Нижние Поля, 35, офис 12
+    </div>
+    <div class="footer-legal">ООО "ДипПресс" &nbsp;|&nbsp; ИНН 9734567890 &nbsp;|&nbsp; ОГРН 1237700011223</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация — DeepPress</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="modal-page">
+    <div class="modal-header">
+      <a href="{{ url_for('index') }}" class="logo">
+        <span class="logo-icon">🏮</span>DeepPress
+      </a>
+    </div>
+    <div class="modal-body">
+      <div class="modal-card" style="max-width:480px">
+        <a href="{{ url_for('index') }}" class="modal-close">✕</a>
+        <h2>Регистрация</h2>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alerts">
+              {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+          <div class="field">
+            <label>Имя</label>
+            <input type="text" name="first_name" placeholder="Ваше имя" required>
+          </div>
+          <div class="field">
+            <label>Фамилия</label>
+            <input type="text" name="second_name" placeholder="Ваша фамилия" required>
+          </div>
+          <div class="field">
+            <label>Телефон</label>
+            <input type="text" name="phone" placeholder="+7 (900) 000-00-00" required>
+          </div>
+          <div class="field">
+            <label>Пароль</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+            <span class="hint">Не менее 8 символов, хотя бы 1 латинская буква</span>
+          </div>
+          <div class="field">
+            <label>Повторите пароль</label>
+            <input type="password" name="confirm_password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+        </form>
+        <p class="modal-hint">Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

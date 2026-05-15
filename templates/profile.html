@@ -1,0 +1,53 @@
+{% extends "base_cabinet.html" %}
+{% block title %}Профиль — DeepPress{% endblock %}
+{% set active_tab = 'profile' %}
+
+{% block content %}
+<div class="profile-card">
+  <h1>Профиль</h1>
+
+  {% if not editing %}
+  <!-- View mode -->
+  <div class="profile-field"><span class="field-label">Имя</span><span class="field-val">{{ user.first_name }}</span></div>
+  <div class="profile-field"><span class="field-label">Фамилия</span><span class="field-val">{{ user.second_name }}</span></div>
+  <div class="profile-field"><span class="field-label">Email</span><span class="field-val">{{ user.email or 'Не заполнено' }}</span></div>
+  <div class="profile-field"><span class="field-label">Номер телефона</span><span class="field-val">{{ user.phone }}</span></div>
+  <div class="profile-actions">
+    <a href="{{ url_for('profile') }}?edit=1" class="btn btn-outline">Редактировать</a>
+  </div>
+
+  {% else %}
+  <!-- Edit mode -->
+  <form method="POST">
+    <div class="field">
+      <label>Имя</label>
+      <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Ваше имя">
+    </div>
+    <div class="field">
+      <label>Фамилия</label>
+      <input type="text" name="second_name" value="{{ user.second_name }}" placeholder="Ваша фамилия">
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" name="email" value="{{ user.email }}" placeholder="example@mail.ru">
+    </div>
+    <div class="field">
+      <label>Номер телефона</label>
+      <input type="text" value="{{ user.phone }}" disabled>
+    </div>
+    <div class="field">
+      <label>Пароль</label>
+      <input type="password" name="password" placeholder="Новый пароль">
+    </div>
+    <div class="field">
+      <label>&nbsp;</label>
+      <input type="password" name="confirm_password" placeholder="Повторите новый пароль">
+    </div>
+    <div class="profile-actions">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+      <a href="{{ url_for('profile') }}" class="btn btn-outline">Отмена</a>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

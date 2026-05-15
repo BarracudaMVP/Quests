@@ -1,0 +1,19 @@
+# Данные и личные файлы
+Экраны/
+Task.pdf
+*.dat
+
+# Документация (локальная)
+CLAUDE.md
+README.md
+
+# Настройки Claude
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+.venv/
