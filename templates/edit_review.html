@@ -3,17 +3,63 @@
 {% set active_tab = 'reviews' %}
 
 {% block content %}
-<div class="profile-card">
-  <h2>Изменить отзыв — {{ quest.name }}</h2>
-  <form method="POST">
-    <div class="field">
-      <label>Текст отзыва</label>
-      <textarea name="text" required>{{ review.text }}</textarea>
-    </div>
-    <div class="profile-actions">
-      <button type="submit" class="btn btn-primary">Сохранить</button>
-      <a href="{{ url_for('my_reviews') }}" class="btn btn-outline">Отмена</a>
-    </div>
-  </form>
+<div class="form-center">
+  <div class="profile-card">
+    <h2>Изменить отзыв</h2>
+
+    <form method="POST">
+      <div class="field">
+        <input type="text" value="{{ quest.name }}" disabled>
+      </div>
+
+      <div class="rating-group">
+        <label>Общее впечатление:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="overall" value="{{ v }}" {% if v == review.overall %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Актёрская игра:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="acting" value="{{ v }}" {% if v == review.acting %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="rating-group">
+        <label>Логичность и связность заданий:</label>
+        <div class="rating-options">
+          {% for v in [1,2,3,4,5] %}
+          <label>
+            <input type="radio" name="logic" value="{{ v }}" {% if v == review.logic %}checked{% endif %}>
+            <span>{{ v }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <hr style="border-color:var(--border);margin:4px 0 20px">
+
+      <div class="field" style="margin-top:8px">
+        <label>Отзыв</label>
+        <textarea name="text" required>{{ review.text }}</textarea>
+      </div>
+
+      <div class="profile-actions">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{{ url_for('my_reviews') }}" class="btn btn-outline">Отмена</a>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}

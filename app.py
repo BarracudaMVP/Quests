@@ -6,6 +6,14 @@ from book import Book
 app = Flask(__name__)
 app.secret_key = 'quest-secret-2025'
 
+
+@app.template_filter('phone_fmt')
+def phone_fmt(value):
+    p = str(value).replace('+', '').replace(' ', '')
+    if len(p) == 11:
+        return f"+{p[0]} ({p[1:4]}) {p[4:7]}-{p[7:9]}-{p[9:11]}"
+    return value
+
 book = Book()
 
 
@@ -28,7 +36,9 @@ def login_required(fn):
 
 @app.route('/')
 def index():
-    return render_template('index.html', quests=book.GetQuests(), user=current_user())
+    if session.get('user_id'):
+        return redirect(url_for('quests'))
+    return render_template('index.html', user=None)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -52,6 +62,18 @@ def register():
         for e in errors:
             flash(e)
     return render_template('register.html', user=current_user())
+
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        errors = book.ResetPassword(request.form)
+        if not errors:
+            flash('Пароль успешно изменён')
+            return redirect(url_for('login'))
+        for e in errors:
+            flash(e)
+    return render_template('forgot_password.html', user=None)
 
 
 @app.route('/logout')
@@ -103,22 +125,16 @@ def add_booking():
     return redirect(url_for('my_bookings'))
 
 
-@app.route('/booking/edit/<int:booking_id>', methods=['GET', 'POST'])
+
+@app.route('/booking/edit/<int:booking_id>', methods=['POST'])
 @login_required
 def edit_booking(booking_id):
-    booking = book.GetBooking(booking_id)
-    if not booking or booking.user_id != session['user_id']:
-        flash('Бронирование не найдено')
-        return redirect(url_for('my_bookings'))
-    quest = book.GetQuest(booking.quest_id)
-    if request.method == 'POST':
-        errors = book.UpdateBooking(session['user_id'], booking_id, request.form)
-        if not errors:
-            flash('Бронирование обновлено')
-            return redirect(url_for('my_bookings'))
-        for e in errors:
-            flash(e)
-    return render_template('edit_booking.html', booking=booking, quest=quest, user=current_user())
+    errors = book.UpdateBooking(session['user_id'], booking_id, request.form)
+    for e in errors:
+        flash(e)
+    if not errors:
+        flash('Бронирование обновлено')
+    return redirect(url_for('my_bookings'))
 
 
 @app.route('/booking/delete/<int:booking_id>', methods=['POST'])

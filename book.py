@@ -19,6 +19,7 @@ class Quest:
     difficulty: int = 3
     fear: int = 3
     image: str = ""
+    age_limit: int = 18
 
 
 all_quests: List[Quest] = [
@@ -26,17 +27,17 @@ all_quests: List[Quest] = [
           "Несколько лет назад в пригороде исчезали люди. Ни следов, ни требований выкупа. "
           "Только одна деталь — перед исчезновением каждый получал конверт с одним словом: «Прозрей». "
           "Секта называла себя «Слепые». Они верили, что истина открывается только тем, кто потерял зрение.",
-          5000, 4, 3, "quest_1.jpg"),
+          5000, 4, 3, "quest_1.jpg", 18),
     Quest(2, "Живая коллекция", 90, 4, 6,
           "Старый особняк коллекционера скрывает тёмную тайну. Экспонаты оживают по ночам, "
           "а выход заперт до рассвета. У вас есть 90 минут, чтобы раскрыть секрет коллекции "
           "и выбраться до того, как экспонатов станет на одного больше.",
-          6000, 3, 4, "quest_2.jpg"),
+          6000, 3, 4, "quest_2.jpg", 16),
     Quest(3, "Карантин", 60, 2, 8,
           "Вирус вырвался на свободу. Город в панике. Ваша группа заперта в лаборатории "
           "с единственным шансом на спасение — найти антидот за 60 минут. "
           "Каждая секунда на счету. Промедление — смерть.",
-          4500, 2, 5, "quest_3.jpg"),
+          4500, 2, 5, "quest_3.jpg", 14),
 ]
 
 
@@ -259,6 +260,29 @@ class Book:
             self.storage.Store()
         return errors
 
+    def ResetPassword(self, form):
+        errors = []
+        phone = form.get('phone', '')
+        err = User().validate_phone(phone)
+        if err:
+            errors.append(err)
+            return errors
+        normalized = "+" + phone
+        user = next((u for u in self.items.values() if u.phone == normalized), None)
+        if not user:
+            errors.append("Пользователь с таким номером не найден")
+            return errors
+        password = form.get('password', '')
+        err = User().validate_password(password)
+        if err:
+            errors.append(err)
+        elif form.get('confirm_password') != password:
+            errors.append("Пароли не совпадают")
+        if not errors:
+            user.password = password
+            self.storage.Store()
+        return errors
+
     def DeleteUser(self, user_id):
         if user_id in self.items:
             del self.items[user_id]
@@ -392,7 +416,18 @@ class Book:
             return ["Отзыв слишком короткий (минимум 10 символов)"]
         if len(text) > 500:
             return ["Отзыв слишком длинный (максимум 500 символов)"]
-        review.text = text
+        try:
+            overall = int(form.get('overall', review.overall))
+            acting  = int(form.get('acting',  review.acting))
+            logic   = int(form.get('logic',   review.logic))
+            if not all(1 <= v <= 5 for v in [overall, acting, logic]):
+                return ["Оценки должны быть от 1 до 5"]
+        except ValueError:
+            return ["Некорректные оценки"]
+        review.text    = text
+        review.overall = overall
+        review.acting  = acting
+        review.logic   = logic
         self.storage.Store()
         return []
 
