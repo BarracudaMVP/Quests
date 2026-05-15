@@ -29,67 +29,22 @@
   </div>
 </div>
 
-<!-- Booking form -->
-<form method="POST" action="{{ url_for('add_booking') }}" id="bookingForm">
-  <input type="hidden" name="quest_id" value="{{ quest.id }}">
-  <input type="hidden" name="slot" id="selectedSlot" value="">
-
-  {% if slots_grouped %}
-  <div class="quest-section">
-    <h2>Расписание сеансов</h2>
-    <div class="slot-legend">
-      <span><span class="slot-legend-dot free"></span>Свободно</span>
-      <span><span class="slot-legend-dot taken"></span>Занято</span>
-    </div>
-    <div class="slot-calendar">
-      {% set all_times = ['15:30', '17:00', '20:00'] %}
-      {% for date, times in slots_grouped.items() %}
-      {% set parts = date.split('.') %}
-      {% set months = ['', 'января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'] %}
-      <div class="slot-row">
-        <div class="slot-date">
-          <strong>{{ parts[0] }} {{ months[parts[1]|int] }}</strong>
-        </div>
-        {% for t in all_times %}
-          {% if t in times %}
-            <button type="button" class="slot-btn free"
-                    onclick="selectSlot('{{ date }} {{ t }}', this)">{{ t }}</button>
-          {% else %}
-            <button type="button" class="slot-btn taken" disabled>{{ t }}</button>
-          {% endif %}
-        {% endfor %}
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% else %}
-    <p class="empty-state">Свободных слотов нет. Свяжитесь с нами по телефону.</p>
-  {% endif %}
-
-  <!-- Confirmation block -->
-  <div class="booking-confirm" id="bookingConfirm">
-    <h3>Забронировать игру</h3>
-    <div class="booking-summary">
-      <strong>{{ quest.name }}</strong><br>
-      Дата и время: <strong id="confirmSlot">—</strong><br>
-      Количество игроков:
-    </div>
-    <div class="field">
-      <input type="number" name="player_count"
-             min="{{ quest.min_players }}" max="{{ quest.max_players }}"
-             value="{{ quest.min_players }}" style="max-width:100px">
-      <span class="hint">от {{ quest.min_players }} до {{ quest.max_players }} человек</span>
-    </div>
-    <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:16px;">
-      Все данные будут отправлены на номер, указанный в профиле.
-    </p>
-    <button type="submit" class="btn btn-primary btn-block">Подтвердить бронь</button>
-  </div>
-</form>
+<div style="text-align:center;margin:24px 0">
+  <a href="{{ url_for('quest_slots', quest_id=quest.id) }}" class="btn btn-primary btn-lg">Бронировать</a>
+</div>
 
 <div class="quest-section">
   <h2>Описание</h2>
-  <p>{{ quest.description }}</p>
+  {% for para in quest.description.split('\n\n') %}
+    <p style="margin-bottom:12px">{{ para }}</p>
+  {% endfor %}
+</div>
+
+<div class="quest-section">
+  <h2>Цены</h2>
+  <p style="color:var(--text-muted);font-size:.85rem;margin-top:8px">
+    Стоимость указана за команду от 2 до 4 игроков. За каждого последующего участника доплата в размере — 1000 рублей.
+  </p>
 </div>
 
 <div class="quest-section">
@@ -99,15 +54,4 @@
   </p>
   <a href="{{ url_for('add_review') }}" class="btn btn-outline">Оценить</a>
 </div>
-
-<script>
-function selectSlot(slot, btn) {
-  document.querySelectorAll('.slot-btn.free').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('selectedSlot').value = slot;
-  document.getElementById('confirmSlot').textContent = slot;
-  document.getElementById('bookingConfirm').classList.add('visible');
-  document.getElementById('bookingConfirm').scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-</script>
 {% endblock %}

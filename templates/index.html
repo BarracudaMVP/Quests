@@ -5,6 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeepPress — Квест-комнаты</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    body::before { display: none; }
+    body {
+      background-color: rgba(8, 12, 21, 1);
+      background-image:
+        linear-gradient(
+          to bottom,
+          rgba(8,12,21,1) 0%,
+          rgba(8,12,21,1) 22%,
+          transparent 30%,
+          transparent 70%,
+          rgba(8,12,21,1) 78%,
+          rgba(8,12,21,1) 100%
+        ),
+        url('{{ url_for('static', filename='img/bgmain.png') }}');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* ── Header: logo left, nav right ── */
+    .landing-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      padding: clamp(12px, 1.875vw, 24px) clamp(20px, 3.125vw, 40px);
+    }
+    .landing-nav { gap: 130px; margin-right: 15%; }
+
+    /* ── Text block ── */
+    .landing-text {
+      position: relative;
+      background: transparent;
+      border: none;
+      border-radius: 50px;
+      backdrop-filter: none;
+      padding: 40px 44px;
+      width: 486.52px;
+      overflow: visible;
+    }
+    .landing-text::before {
+      content: '';
+      position: absolute;
+      width: 486.52px;
+      height: 485px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(50% 50% at 50% 50%, rgba(90, 118, 142, 1) 0%, rgba(8, 12, 21, 1) 100%);
+      opacity: 0.92;
+      border-radius: 50px;
+      filter: blur(70px);
+      z-index: -1;
+    }
+    .landing-text p {
+      font-size: 1.35rem;
+      color: #fff;
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    /* ── Nav buttons ── */
+    .landing-nav .btn {
+      background: #000;
+      border: 1.5px solid #fff;
+      color: #fff;
+      padding: 18px 0;
+      font-size: 1.7rem;
+      border-radius: 20px;
+      width: 280px;
+      text-align: center;
+    }
+    .landing-nav .btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+    /* ── Modal overlay with backdrop blur ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 500;
+      visibility: hidden;
+      opacity: 0;
+      background: transparent;
+      backdrop-filter: blur(0px);
+      transition: opacity 0.25s, visibility 0.25s, backdrop-filter 0.3s;
+    }
+    .modal-overlay.is-open {
+      visibility: visible;
+      opacity: 1;
+      backdrop-filter: blur(8px);
+    }
+    .modal-overlay .modal-close {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+    }
+    .modal-overlay .modal-card {
+      overflow: visible;
+      background:
+        linear-gradient(rgba(8,12,21,0.50), rgba(8,12,21,0.50)),
+        url('{{ url_for('static', filename='img/registrationform.png') }}') center/cover no-repeat;
+      border: 1px solid var(--teal-border);
+    }
+    #modal-login .modal-card {
+      width: 480px;
+      height: 370px;
+    }
+    #modal-register .modal-card {
+      width: 620px;
+      height: 620px;
+    }
+    #modal-forgot .modal-card {
+      width: 480px;
+      height: 450px;
+    }
+    .modal-overlay .modal-card .btn-primary {
+      background: #6b7280;
+      box-shadow: none;
+      color: #fff;
+    }
+    .modal-overlay .modal-card .btn-primary:hover {
+      background: #7c8390;
+      box-shadow: none;
+    }
+    .modal-overlay .modal-hint a,
+    .modal-overlay .modal-hint {
+      color: #9ca3af;
+    }
+  </style>
 </head>
 <body>
   <div class="landing">
@@ -17,8 +152,8 @@
           <a href="{{ url_for('profile') }}" class="btn btn-outline">{{ user.first_name }}</a>
           <a href="{{ url_for('quests') }}" class="btn btn-primary">Квесты</a>
         {% else %}
-          <a href="{{ url_for('login') }}" class="btn btn-outline">Вход</a>
-          <a href="{{ url_for('register') }}" class="btn btn-primary">Регистрация</a>
+          <a href="#" class="btn btn-outline" onclick="openModal('modal-login');return false;">Вход</a>
+          <a href="#" class="btn btn-primary" onclick="openModal('modal-register');return false;">Регистрация</a>
         {% endif %}
       </div>
     </div>
@@ -26,10 +161,183 @@
     <div class="landing-body">
       <div class="landing-text">
         <p>
-          Квест-комната — это интеллектуальный досуг для любителей острых ощущений, где ты получаешь мощный заряд адреналина и ярких эмоций. Погружаясь в атмосферу загадок и стрессовых ситуаций, ты не только проверяешь свою логику и интуицию, но и исследуешь разные грани личности.
+          Квест-комната — это интеллектуальный досуг для любителей острых ощущений, где ты получаешь мощный заряд адреналина и яркие эмоции. Погружаясь в атмосферу загадок и стрессовых ситуаций, ты не только проверяешь свою логику и интуицию, но и исследуешь разные грани личности: как ведешь себя, когда время на исходе, и готов ли взять на себя ответственность в критический момент. Это способ не просто развлечься, а узнать о себе то, о чем ты даже не догадывался.
         </p>
       </div>
     </div>
   </div>
+
+  <!-- ── Login modal ── -->
+  <div class="modal-overlay" id="modal-login">
+    <div class="modal-card" style="position:relative;margin:0 auto">
+      <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+      <h2>Вход в личный кабинет</h2>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="alerts">
+            {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="field">
+          <label>Телефон</label>
+          <input type="text" name="phone" placeholder="+7 (900) 000-00-00" data-phone autofocus>
+        </div>
+        <div class="field">
+          <label>Пароль</label>
+          <div class="pw-wrap">
+            <input type="password" name="password" placeholder="••••••••">
+            <button type="button" class="pw-eye"
+                    onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                    onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                    ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+      </form>
+      <p class="modal-hint"><a href="#" onclick="closeModal('modal-login');openModal('modal-forgot');return false;">Забыли пароль?</a></p>
+    </div>
+  </div>
+
+  <!-- ── Register modal ── -->
+  <div class="modal-overlay" id="modal-register">
+    <div class="modal-card" style="position:relative;margin:0 auto;max-width:480px">
+      <button class="modal-close" onclick="closeModal('modal-register')">✕</button>
+      <h2>Регистрация</h2>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="alerts">
+            {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}">
+        <div class="field">
+          <label>Имя</label>
+          <input type="text" name="first_name" placeholder="Ваше имя" required>
+        </div>
+        <div class="field">
+          <label>Фамилия</label>
+          <input type="text" name="second_name" placeholder="Ваша фамилия" required>
+        </div>
+        <div class="field">
+          <label>Телефон</label>
+          <input type="text" name="phone" placeholder="+7 (900) 000-00-00" data-phone required>
+        </div>
+        <div class="field">
+          <label>Пароль</label>
+          <div class="pw-wrap">
+            <input type="password" name="password" placeholder="••••••••" required>
+            <button type="button" class="pw-eye"
+                    onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                    onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                    ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <span class="hint">Не менее 8 символов, хотя бы 1 латинская буква</span>
+        </div>
+        <div class="field">
+          <label>Повторите пароль</label>
+          <div class="pw-wrap">
+            <input type="password" name="confirm_password" placeholder="••••••••" required>
+            <button type="button" class="pw-eye"
+                    onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                    onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                    ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Forgot password modal ── -->
+  <div class="modal-overlay" id="modal-forgot">
+    <div class="modal-card" style="position:relative;margin:0 auto">
+      <button class="modal-close" onclick="closeModal('modal-forgot')">✕</button>
+      <h2>Восстановление пароля</h2>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="alerts">
+            {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('forgot_password') }}">
+        <div class="field">
+          <label>Телефон</label>
+          <input type="text" name="phone" placeholder="+7 (900) 000-00-00" data-phone>
+        </div>
+        <div class="field">
+          <label>Новый пароль</label>
+          <div class="pw-wrap">
+            <input type="password" name="password" placeholder="••••••••">
+            <button type="button" class="pw-eye"
+                    onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                    onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                    ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Повторите новый пароль</label>
+          <div class="pw-wrap">
+            <input type="password" name="confirm_password" placeholder="••••••••">
+            <button type="button" class="pw-eye"
+                    onmousedown="pwShow(this)" onmouseup="pwHide(this)"
+                    onmouseleave="pwHide(this)" ontouchstart="pwShow(this)"
+                    ontouchend="pwHide(this)" ontouchcancel="pwHide(this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/pw-eye.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/phone-format.js') }}"></script>
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.add('is-open');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('is-open');
+    }
+    document.querySelectorAll('.modal-overlay').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        if (e.target === el) closeModal(el.id);
+      });
+    });
+  </script>
 </body>
 </html>

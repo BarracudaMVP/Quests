@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Подтверждение бронирования — DeepPress{% endblock %}
+
+{% block content %}
+<div class="form-center">
+  <div class="modal-card" style="position:relative;margin:0 auto">
+    <a href="{{ url_for('quest_slots', quest_id=quest.id) }}" class="modal-close">✕</a>
+    <h2>Забронировать игру</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alerts">
+          {% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('add_booking') }}">
+      <input type="hidden" name="quest_id" value="{{ quest.id }}">
+      <input type="hidden" name="slot" value="{{ slot }}">
+
+      <div class="confirm-rows">
+        <div class="confirm-row">
+          <span class="confirm-label">Название квеста</span>
+          <span class="confirm-val">{{ quest.name }}</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Дата</span>
+          <span class="confirm-val">{{ date }}</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Время</span>
+          <span class="confirm-val">{{ time }}</span>
+        </div>
+        <div class="confirm-row">
+          <span class="confirm-label">Количество игроков</span>
+          <input type="number" name="player_count"
+                 min="{{ quest.min_players }}" max="{{ quest.max_players }}"
+                 value="{{ quest.min_players }}"
+                 style="width:80px;text-align:center">
+        </div>
+      </div>
+
+      <p class="confirm-note">Все данные будут отправлены на номер, указанный в профиле</p>
+
+      <button type="submit" class="btn btn-confirm-book">Подтвердить бронь</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

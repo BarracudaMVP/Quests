@@ -96,9 +96,33 @@ def quest_detail(quest_id):
     if not quest:
         flash('Квест не найден')
         return redirect(url_for('quests'))
-    return render_template('quest_detail.html', quest=quest,
-                           slots=book.available_slots,
+    return render_template('quest_detail.html', quest=quest, user=current_user())
+
+
+@app.route('/quest/<int:quest_id>/slots')
+@login_required
+def quest_slots(quest_id):
+    quest = book.GetQuest(quest_id)
+    if not quest:
+        flash('Квест не найден')
+        return redirect(url_for('quests'))
+    return render_template('quest_slots.html', quest=quest,
                            slots_grouped=book.GetSlotsGrouped(),
+                           user=current_user())
+
+
+@app.route('/quest/<int:quest_id>/confirm')
+@login_required
+def quest_confirm(quest_id):
+    quest = book.GetQuest(quest_id)
+    slot = request.args.get('slot', '')
+    if not quest or not slot:
+        return redirect(url_for('quest_slots', quest_id=quest_id))
+    parts = slot.split(' ')
+    date = parts[0] if len(parts) > 0 else ''
+    time = parts[1] if len(parts) > 1 else ''
+    return render_template('quest_confirm.html', quest=quest,
+                           slot=slot, date=date, time=time,
                            user=current_user())
 
 
@@ -121,7 +145,6 @@ def add_booking():
         flash(e)
     if errors:
         return redirect(url_for('quest_detail', quest_id=request.form.get('quest_id', 0)))
-    flash('Бронирование создано!')
     return redirect(url_for('my_bookings'))
 
 
@@ -141,7 +164,6 @@ def edit_booking(booking_id):
 @login_required
 def delete_booking(booking_id):
     book.DeleteBooking(session['user_id'], booking_id)
-    flash('Бронирование отменено')
     return redirect(url_for('my_bookings'))
 
 
@@ -162,7 +184,6 @@ def add_review():
     if request.method == 'POST':
         errors = book.AddReview(session['user_id'], request.form)
         if not errors:
-            flash('Отзыв добавлен!')
             return redirect(url_for('my_reviews'))
         for e in errors:
             flash(e)
@@ -191,7 +212,6 @@ def edit_review(review_id):
 @login_required
 def delete_review(review_id):
     book.DeleteReview(session['user_id'], review_id)
-    flash('Отзыв удалён')
     return redirect(url_for('my_reviews'))
 
 

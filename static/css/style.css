@@ -4,7 +4,7 @@
 :root {
   --bg:         #07111a;
   --bg-card:    rgba(5, 28, 45, 0.90);
-  --bg-header:  #0b1e2d;
+  --bg-header:  rgba(8, 12, 21, 1);
   --bg-input:   rgba(255,255,255,0.07);
   --teal:       #00d4be;
   --teal-dark:  #009688;
@@ -352,7 +352,15 @@ a:hover { text-decoration: underline; }
   overflow: hidden;
   transition: border-color .2s, box-shadow .2s;
   backdrop-filter: blur(6px);
+  position: relative;
+  cursor: pointer;
 }
+.quest-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.quest-stars-row .btn { position: relative; z-index: 2; }
 .quest-card:hover {
   border-color: var(--teal-border);
   box-shadow: 0 0 0 1px var(--teal-border), var(--shadow);
@@ -396,11 +404,11 @@ a:hover { text-decoration: underline; }
 
 /* ─── Quest Detail ────────────────────────────────────────────────────────── */
 .quest-hero-img {
-  width: 100%;
-  height: 280px;
+  width: 50%;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius);
   overflow: hidden;
-  margin-bottom: 24px;
+  margin: 0 auto 24px;
   background: #0a1e2e center/cover no-repeat;
 }
 .quest-hero-img.img-1 { background-image: url('/static/img/quest1.png'); }
@@ -484,6 +492,40 @@ a:hover { text-decoration: underline; }
   color: var(--text-muted);
   cursor: not-allowed;
 }
+
+/* ─── Booking confirm page ───────────────────────────────────────────────── */
+.confirm-rows { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+.confirm-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: .9rem;
+}
+.confirm-label { color: var(--text-muted); }
+.confirm-val { color: var(--text); font-weight: 600; }
+.confirm-note {
+  font-size: .82rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+  margin: 16px 0 20px;
+}
+.btn-confirm-book {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  background: var(--teal);
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-confirm-book:hover { opacity: .88; }
 
 /* ─── Booking confirm ─────────────────────────────────────────────────────── */
 .booking-confirm {

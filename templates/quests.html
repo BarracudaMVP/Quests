@@ -17,6 +17,7 @@
   <div class="quest-grid">
     {% for q in quests %}
     <div class="quest-card">
+      <a href="{{ url_for('quest_detail', quest_id=q.id) if user else url_for('login') }}" class="quest-card-link"></a>
       <div class="quest-card-img img-{{ q.id }}"></div>
       <div class="quest-card-body">
         <h3>{{ q.name }}</h3>

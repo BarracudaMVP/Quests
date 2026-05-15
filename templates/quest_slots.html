@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Расписание — {{ quest.name }} — DeepPress{% endblock %}
+
+{% block content %}
+<h1 class="quest-detail-title">Расписание сеансов</h1>
+
+<div class="slot-legend">
+  <span><span class="slot-legend-dot free"></span>Свободно</span>
+  <span><span class="slot-legend-dot taken"></span>Занято</span>
+</div>
+
+{% if slots_grouped %}
+<div class="slot-calendar">
+  {% set all_times = ['15:30', '17:00', '20:00'] %}
+  {% set months = ['', 'января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'] %}
+  {% for date, times in slots_grouped.items() %}
+  {% set parts = date.split('.') %}
+  <div class="slot-row">
+    <div class="slot-date">
+      <strong>{{ parts[0] }} {{ months[parts[1]|int] }}</strong>
+      <span>{{ ['', 'пн','вт','ср','чт','пт','сб','вс'][0] }}</span>
+    </div>
+    {% for t in all_times %}
+      {% if t in times %}
+        <a href="{{ url_for('quest_confirm', quest_id=quest.id, slot=date + ' ' + t) }}"
+           class="slot-btn free">{{ t }}</a>
+      {% else %}
+        <button class="slot-btn taken" disabled>{{ t }}</button>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+  <p class="empty-state">Свободных слотов нет. Свяжитесь с нами по телефону.</p>
+{% endif %}
+{% endblock %}
